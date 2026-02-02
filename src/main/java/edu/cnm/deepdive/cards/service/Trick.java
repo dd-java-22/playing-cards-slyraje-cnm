@@ -47,13 +47,14 @@ public class Trick {
       }
     }
 
+    //noinspection ComparatorCombinators
     blackPile.sort((card1,card2) -> {
       int result = card1.getColor().compareTo(card2.getColor());
       if (result == 0) {
         result = card1.compareTo(card2);
       }
       return result;
-      });
+    });
     redPile.sort((card1, card2) -> {
       int result = -card1.getColor().compareTo(card2.getColor());
       if (result == 0) {
@@ -61,7 +62,7 @@ public class Trick {
       }
       return result;
     });
-    }
+  }
 
 
   public void reveal() {
