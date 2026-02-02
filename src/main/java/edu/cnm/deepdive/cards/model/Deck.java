@@ -13,6 +13,7 @@ public class Deck {
   private final List<Card> cards;
 
   private Iterator<Card> dealer;
+  private int remaining;
 
   public Deck() {
     Suit[] suits = Suit.values();
@@ -25,16 +26,19 @@ public class Deck {
       }
     }
     dealer = cards.iterator();
+    remaining = cards.size();
   }
 
   public void shuffle(RandomGenerator rng) {
     Collections.shuffle(cards, rng);
     dealer = cards.iterator();
+    remaining = cards.size();;
   }
 
   public void sort(Comparator<Card> comparator) {
     cards.sort(comparator);
     dealer = cards.iterator();
+    remaining = cards.size();;
   }
 
   /**
@@ -43,7 +47,17 @@ public class Deck {
    * @throws NoSuchElementException if the deck is empty.
    */
   public Card deal() throws NoSuchElementException {
-    return dealer.next();
+    Card card = dealer.next();
+    remaining--;
+    return card;
+  }
+
+  public boolean isEmpty() {
+    return !dealer.hasNext();
+  }
+
+  public int size() {
+    return remaining;
   }
 
   @Override
