@@ -7,11 +7,9 @@ import java.util.random.RandomGenerator;
 public class Main {
 
   public static void main(String[] args) {
-    Deck deck = new Deck();
-    RandomGenerator rng = RandomGenerator.getDefault();
-    Trick trick = new Trick(deck, rng);
-    trick.perform(true);
-    trick.reveal();
+    View view = new View();
+    view.perform();
+
   }
 
 }

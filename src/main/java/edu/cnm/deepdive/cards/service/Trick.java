@@ -15,6 +15,19 @@ public class Trick {
   private final List<Card> blackPile;
   private final List<Card> redPile;
 
+  public record TrickResult(List<Card> blackPile, List<Card> redPile) {
+
+    @Override
+    public String toString() {
+      long redInRedCount = redPile.stream().filter(card -> card.getColor() == Color.RED).count();
+      long blackInBlackCount = blackPile.stream().filter(card -> card.getColor() == Color.BLACK).count();
+      redPile.sort(Comparator.comparing(Card::getColor, Comparator.reverseOrder()).thenComparing(Card::getRank));
+      blackPile.sort(Comparator.comparing(Card::getColor).thenComparing(Card::getRank));
+      return "Red Pile (" + redInRedCount + "): " + redPile +
+          "\nBlack Pile (" + blackInBlackCount + "): " + blackPile;
+    }
+  }
+
   public Trick(Deck deck, RandomGenerator rng) {
     this.deck = deck;
     this.rng = rng;
@@ -23,7 +36,7 @@ public class Trick {
     deck.shuffle(rng);
   }
 
-  public void perform(boolean swap) {
+  public void perform() {
 
     blackPile.clear();
     redPile.clear();
@@ -38,23 +51,20 @@ public class Trick {
         redPile.add(nextCard);
       }
     }
-    if (swap) {
-      int maxSwap = Math.min(blackPile.size(), redPile.size());
-      int numSwaps = rng.nextInt(1, maxSwap+1); //Equiv. to 1 + rng.nextInt(maxSwap)
-      for (int i = 0; i < numSwaps; i++) {
-        redPile.add(blackPile.removeFirst());
-        blackPile.add(redPile.removeFirst());
-      }
-    }
 
-    blackPile.sort(Comparator.comparing(Card::getColor).thenComparing(Comparator.naturalOrder()));
-
-    redPile.sort(Comparator.comparing(Card::getColor, Comparator.reverseOrder()).thenComparing(Comparator.naturalOrder()));
   }
 
+  public int swap() {
+    int maxSwap = Math.min(blackPile.size(), redPile.size());
+    int numSwaps = rng.nextInt(1, maxSwap + 1); //Equiv. to 1 + rng.nextInt(maxSwap)
+    for (int i = 0; i < numSwaps; i++) {
+      redPile.add(blackPile.removeFirst());
+      blackPile.add(redPile.removeFirst());
+    }
+    return numSwaps;
+  }
 
-  public void reveal() {
-    System.out.println(blackPile);
-    System.out.println(redPile);
+  public TrickResult getResult() {
+    return new TrickResult(blackPile, redPile);
   }
 }
